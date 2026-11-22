@@ -1,0 +1,29 @@
+{
+  "name": "biodiesel-transesterification",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Organic Chemistry 2nd presentation — Transesterification of Palm Oil (Biodiesel Production): mechanism (2D/3D) + 3D plant",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check:geometry": "node tools/check_geometry.mjs",
+    "check:align": "node tools/check_align.mjs",
+    "check:plant": "node tools/check_plant.mjs",
+    "check:mechs": "node tools/check_mechs.mjs"
+  },
+  "dependencies": {
+    "@fontsource/bungee": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans-thai": "^5.3.0",
+    "@fontsource/mitr": "^5.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

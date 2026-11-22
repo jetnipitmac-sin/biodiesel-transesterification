@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.DS_Store
+# presenter script stays local (group use only)
+script/
+Biodiesel-Script-4-presenters.pdf
