@@ -35,6 +35,27 @@ for (const [name, M] of Object.entries(MECHS)) {
       })
     }
   }
+  // formal charges: every drawn charge must match the bonds (O: 1 bond = -1, 2 = 0, 3 = +1;
+  // a free H = H+, a bonded H = 0; C = 4 bonds; CH3 / R groups = 1 bond)
+  M.states2d.forEach((st, k) => {
+    const hidden = new Set(st.hide || [])
+    const sum = {}
+    st.bonds.forEach((b) => { sum[b.a] = (sum[b.a] || 0) + (b.o || 1); sum[b.b] = (sum[b.b] || 0) + (b.o || 1) })
+    Object.entries(M.atoms2d).forEach(([id, at]) => {
+      if (hidden.has(id) || !st.pos[id]) return
+      const t = at.t
+      const n = sum[id] || 0
+      let fc = 0
+      if (t === 'O') fc = n - 2
+      else if (t === 'H') fc = n === 0 ? 1 : n - 1
+      else if (t === 'C') fc = n === 4 ? 0 : NaN
+      else if (/CH₃|H₃C|^R/.test(t)) fc = n === 1 ? 0 : NaN
+      else if (t.startsWith('Na')) fc = 0          // the label itself says Na+
+      const drawn = st.charges?.[id] || 0
+      if (fc !== drawn) issues.push(`state ${k} ${id} (${t}, ${n} bonds) formal ${fc} but drawn ${drawn}`)
+      else if (drawn) console.log(`  ${name} state ${k} ${id} (${t}) charge ${drawn > 0 ? '+' : '−'} ✓`)
+    })
+  })
   console.log(`${name}: ${issues.length ? issues.slice(0, 8).join(' | ') : 'OK'}`)
   bad += issues.length
 }

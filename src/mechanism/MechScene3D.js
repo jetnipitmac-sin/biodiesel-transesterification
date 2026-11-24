@@ -75,15 +75,16 @@ function textSprite(text, color, { bg = true, size = 0.4, weight = 600 } = {}) {
   return s
 }
 
-function chargeSprite() {
+function chargeSprite(positive) {
   const c = document.createElement('canvas')
   c.width = 128; c.height = 128
   const g = c.getContext('2d')
-  g.fillStyle = '#3d86ff'
+  g.fillStyle = positive ? tcol('--charge-pos', '#e5484d') : tcol('--charge', '#3d86ff')
   g.beginPath(); g.arc(64, 64, 54, 0, Math.PI * 2); g.fill()
   g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 6; g.stroke()
   g.fillStyle = '#fff'
-  g.fillRect(36, 58, 56, 12)
+  g.fillRect(36, 58, 56, 12)                     // minus bar
+  if (positive) g.fillRect(58, 36, 12, 56)       // plus: add the vertical bar
   const tex = new THREE.CanvasTexture(c)
   tex.colorSpace = THREE.SRGBColorSpace
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }))
@@ -292,7 +293,9 @@ export class MechScene3D {
     this.chargeSprites = {}
     const ids = new Set()
     this.STATES.forEach((s) => Object.keys(s.charges).forEach((id) => ids.add(id)))
-    ids.forEach((id) => { const s = chargeSprite(); this.root.add(s); this.chargeSprites[id] = s })
+    // the sign comes from the data: H+ / O+ in Fischer esterification, O- elsewhere
+    const signOf = (id) => this.STATES.map((s) => s.charges[id]).find((q) => q) || -1
+    ids.forEach((id) => { const s = chargeSprite(signOf(id) > 0); this.root.add(s); this.chargeSprites[id] = s })
   }
 
   buildGlows() {

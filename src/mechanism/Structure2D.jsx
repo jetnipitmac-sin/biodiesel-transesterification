@@ -18,7 +18,8 @@ export const C2D = {
   hot: 'var(--hot2d)',
   nuc: 'var(--nuc)',
   push: 'var(--push)',
-  charge: 'var(--charge)',
+  charge: 'var(--charge)',          // negative charge marker
+  chargePos: 'var(--charge-pos)',   // positive charge marker
   dot: 'var(--dot2d)',
 }
 
@@ -121,14 +122,16 @@ export default function Structure2D({ mech, k, next = k, m = 0, arrow = 0, arrow
         const ch = resting ? c0 : lerp(c0, c1, m)
         const w = a.t.length > 2 ? 50 : 30
         const below = (m < 0.5 ? s0 : s1).chargeSide?.[id] === 'below'
+        const pos = (s0.charges[id] || s1.charges[id] || 0) > 0
         return (
           <g key={id} opacity={vis[id]}>
             <rect className="atom-bg" x={x - w / 2} y={y - 15} width={w} height={30} rx="9" />
             <text x={x} y={y} textAnchor="middle" dominantBaseline="central" className="atom-label" style={{ fill: a.role ? `var(--${a.role}2d)` : C2D.ink }}>{a.t}</text>
             {ch > 0.01 && (
               <g opacity={ch} transform={`translate(${x + w / 2 + 3} ${below ? y + 17 : y - 17})`}>
-                <circle r="10" style={{ fill: C2D.charge }} />
+                <circle r="10" style={{ fill: pos ? C2D.chargePos : C2D.charge }} />
                 <rect x="-5" y="-1.4" width="10" height="2.8" rx="1.2" fill="#fff" />
+                {pos && <rect x="-1.4" y="-5" width="2.8" height="10" rx="1.2" fill="#fff" />}
               </g>
             )}
           </g>
